@@ -11,7 +11,9 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(ERROR_INTERNAL_SERVER).send({ message: err.message });
+      return res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -25,7 +27,9 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(ERROR_BAD_REQUEST).send({ message: err.message });
       }
-      return res.status(ERROR_INTERNAL_SERVER).send({ message: err.message });
+      return res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -42,7 +46,9 @@ const getUser = (req, res) => {
       } else if (err.name === "CastError") {
         return res.status(ERROR_BAD_REQUEST).send({ message: err.message });
       }
-      return res.status(ERROR_INTERNAL_SERVER).send({ message: err.message });
+      return res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
