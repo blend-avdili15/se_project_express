@@ -8,20 +8,19 @@ const {
 
 const getClothingItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
-    .catch((err) => {
-      console.error(err);
-      return res.status(ERROR_INTERNAL_SERVER).send({ message: err.message });
-    });
+    .then((items) => res.send(items))
+    .catch((err) =>
+      res.status(ERROR_INTERNAL_SERVER).send({ message: err.message })
+    );
 };
 
 const createClothingItem = (req, res) => {
-  const { name, weather, imageUrl, owner } = req.body;
+  const { name, weather, imageUrl } = req.body;
+  const owner = req.user._id;
 
   ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
         return res.status(ERROR_BAD_REQUEST).send({ message: err.message });
       }
@@ -37,10 +36,9 @@ const deleteClothingItem = (req, res) => {
       if (!item) {
         return res.status(ERROR_NOT_FOUND).send({ message: "Item not found" });
       }
-      res.status(200).send({ message: "Item deleted successfully" });
+      return res.send({ message: "Item deleted successfully" });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         return res.status(ERROR_BAD_REQUEST).send({ message: err.message });
       }
@@ -58,10 +56,9 @@ const likeItem = (req, res) => {
       if (!item) {
         return res.status(ERROR_NOT_FOUND).send({ message: "Item not found" });
       }
-      res.status(200).send(item);
+      return res.send(item);
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         return res
           .status(ERROR_BAD_REQUEST)
@@ -83,10 +80,9 @@ const dislikeItem = (req, res) => {
       if (!item) {
         return res.status(ERROR_NOT_FOUND).send({ message: "Item not found" });
       }
-      res.status(200).send(item);
+      return res.send(item);
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         return res
           .status(ERROR_BAD_REQUEST)
