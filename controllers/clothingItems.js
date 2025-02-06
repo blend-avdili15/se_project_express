@@ -4,6 +4,7 @@ const {
   ERROR_BAD_REQUEST,
   ERROR_NOT_FOUND,
   ERROR_INTERNAL_SERVER,
+  ERROR_FORBIDDEN,
 } = require("../utils/errors");
 
 const getClothingItems = (req, res) => {
@@ -36,7 +37,14 @@ const deleteClothingItem = (req, res) => {
       if (!item) {
         return res.status(ERROR_NOT_FOUND).send({ message: "Item not found" });
       }
-      return res.send({ message: "Item deleted successfully" });
+      if (item.owner.toString() !== req.user._id) {
+        return res
+          .status(ERROR_FORBIDDEN)
+          .send({ message: "You are not allowed to delete this item" });
+      }
+      return ClothingItem.findByIdAndDelete(itemId).then(() =>
+        res.send({ message: "Item deleted successfully" })
+      );
     })
     .catch((err) => {
       if (err.name === "CastError") {

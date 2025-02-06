@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const mainRouter = require("./routes/index");
 const auth = require("./middlewares/auth");
 
@@ -15,6 +16,8 @@ mongoose
   .catch(console.error);
 
 app.use(express.json());
+
+app.use(cors());
 
 // Unprotected Routes
 app.post("/signin", require("./controllers/users").login);

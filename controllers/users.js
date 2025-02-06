@@ -66,23 +66,49 @@ const createUser = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
-
-  User.findById(userId)
-    .orFail()
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(ERROR_NOT_FOUND).send({ message: err.message });
+const getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        return res.status(ERROR_NOT_FOUND).send({ message: "User not found" });
       }
-      if (err.name === "CastError") {
+      res.send(user);
+    })
+    .catch(() => {
+      res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: "An error occurred on the server" });
+    });
+};
+
+const updateUserProfile = (req, res) => {
+  const { name, avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .then((updatedUser) => {
+      if (!updatedUser) {
+        return res.status(ERROR_NOT_FOUND).send({ message: "User not found" });
+      }
+      res.send(updatedUser);
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
         return res.status(ERROR_BAD_REQUEST).send({ message: err.message });
       }
       return res
         .status(ERROR_INTERNAL_SERVER)
-        .send({ message: "An error has occurred on the server." });
+        .send({ message: "An error occurred on the server" });
     });
 };
 
-module.exports = { getUsers, createUser, getUser, login };
+module.exports = {
+  getUsers,
+  createUser,
+  getCurrentUser,
+  login,
+  updateUserProfile,
+};
