@@ -11,7 +11,9 @@ const getClothingItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.send(items))
     .catch((err) =>
-      res.status(ERROR_INTERNAL_SERVER).send({ message: err.message })
+      res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: "An error has occurred on the server" })
     );
 };
 
@@ -25,14 +27,16 @@ const createClothingItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(ERROR_BAD_REQUEST).send({ message: err.message });
       }
-      return res.status(ERROR_INTERNAL_SERVER).send({ message: err.message });
+      return res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
 const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
 
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
     .then((item) => {
       if (!item) {
         return res.status(ERROR_NOT_FOUND).send({ message: "Item not found" });
@@ -50,7 +54,9 @@ const deleteClothingItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(ERROR_BAD_REQUEST).send({ message: err.message });
       }
-      return res.status(ERROR_INTERNAL_SERVER).send({ message: err.message });
+      return res
+        .status(ERROR_INTERNAL_SERVER)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 

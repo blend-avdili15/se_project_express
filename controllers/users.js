@@ -14,6 +14,12 @@ const { JWT_SECRET } = require("../utils/config");
 const login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res
+      .status(ERROR_BAD_REQUEST)
+      .send({ message: "The password and email fields are required" });
+  }
+
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -22,20 +28,15 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch(() => {
-      res
-        .status(ERROR_UNAUTHORIZED)
-        .send({ message: "Incorrect email or password" });
-    });
-};
-
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch(() =>
-      res
+      if (err.message === "Incorrect email or password") {
+        return res
+          .status(ERROR_UNAUTHORIZED)
+          .send({ message: "Incorrect email and password" });
+      }
+      return res
         .status(ERROR_INTERNAL_SERVER)
-        .send({ message: "An error has occurred on the server." })
-    );
+        .send({ message: "An error has occurred on the server" });
+    });
 };
 
 const createUser = (req, res) => {
@@ -57,7 +58,7 @@ const createUser = (req, res) => {
           .status(ERROR_CONFLICT)
           .send({ message: "Email already is use" });
       }
-      if (err.code === "ValidationError") {
+      if (err.name === "ValidationError") {
         return res.status(ERROR_BAD_REQUEST).send({ message: err.message });
       }
       return res
@@ -106,7 +107,6 @@ const updateUserProfile = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   login,
