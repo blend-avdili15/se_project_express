@@ -1,9 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const mainRouter = require("./routes/index");
-const auth = require("./middlewares/auth");
 const helmet = require("helmet");
+const mainRouter = require("./routes/index");
 
 const app = express();
 
@@ -19,7 +18,9 @@ mongoose
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
+
 app.use("/items", require("./routes/clothingItems"));
+
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {

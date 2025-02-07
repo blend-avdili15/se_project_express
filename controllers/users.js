@@ -20,14 +20,14 @@ const login = (req, res) => {
       .send({ message: "The password and email fields are required" });
   }
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ token });
+      return res.send({ token });
     })
-    .catch(() => {
+    .catch((err) => {
       if (err.message === "Incorrect email or password") {
         return res
           .status(ERROR_UNAUTHORIZED)
@@ -73,7 +73,7 @@ const getCurrentUser = (req, res) => {
       if (!user) {
         return res.status(ERROR_NOT_FOUND).send({ message: "User not found" });
       }
-      res.send(user);
+      return res.send(user);
     })
     .catch(() => {
       res
@@ -94,7 +94,7 @@ const updateUserProfile = (req, res) => {
       if (!updatedUser) {
         return res.status(ERROR_NOT_FOUND).send({ message: "User not found" });
       }
-      res.send(updatedUser);
+      return res.send(updatedUser);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
