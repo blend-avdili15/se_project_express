@@ -27,7 +27,15 @@ app.use(cors());
 // Enable request logging before routes
 app.use(requestLogger);
 
+// Crash Test ///////
+// app.get("/crash-test", () => {
+//   setTimeout(() => {
+//     throw new Error("Server will crash now");
+//   }, 0);
+// });
+
 // routes
+app.use("/items", require("./routes/clothingItems"));
 app.use("/", mainRouter);
 
 // enable error logging after routes
@@ -36,8 +44,6 @@ app.use(errors());
 
 // centralized error handler
 app.use(errorHandler);
-
-app.use("/items", require("./routes/clothingItems"));
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

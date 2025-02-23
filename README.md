@@ -17,3 +17,9 @@ This is the backend for the WTWR (What to Wear) app, a clothing management syste
 `npm run start` — to launch the server
 
 `npm run dev` — to launch the server with the hot reload feature
+
+## Deployment
+
+The backend is hosted at: https://api.style.wtwr.jumpingcrab.com
+
+The Frontend is hosted at: https://style.wtwr.jumpingcrab.com
