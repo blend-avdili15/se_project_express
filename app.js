@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -24,25 +26,19 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors());
 
-// Enable request logging before routes
 app.use(requestLogger);
 
-///// Crash Test
 app.get("/crash-test", () => {
   setTimeout(() => {
     throw new Error("Server will crash now");
   }, 0);
 });
 
-// routes
-app.use("/items", require("./routes/clothingItems"));
 app.use("/", mainRouter);
 
-// enable error logging after routes
 app.use(errorLogger);
 app.use(errors());
 
-// centralized error handler
 app.use(errorHandler);
 
 app.listen(PORT, () => {
