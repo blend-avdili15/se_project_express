@@ -27,12 +27,12 @@ app.use(cors());
 // Enable request logging before routes
 app.use(requestLogger);
 
-// Crash Test ///////
-// app.get("/crash-test", () => {
-//   setTimeout(() => {
-//     throw new Error("Server will crash now");
-//   }, 0);
-// });
+///// Crash Test
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
 
 // routes
 app.use("/items", require("./routes/clothingItems"));
